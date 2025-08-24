@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     environment {
-        REGISTRY = "docker.io/dorismb"
-        APP_NAME = "app"
-        IMAGE_TAG = "${env.BUILD_NUMBER}"
+        REGISTRY = "docker.io/dorismb"   // Ton compte DockerHub
+        IMAGE_TAG = "${BUILD_NUMBER}"    // Numéro de build Jenkins comme tag
+        APP_NAME = "app"                 // Nom de ton application (utilisé dans helm)
     }
 
     stages {
@@ -17,7 +17,10 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 script {
-                    sh 'docker-compose build'
+                    def services = ["movie-service", "cast-service"]
+                    services.each { svc ->
+                        sh "docker build -t ${svc}:latest ${svc}/"
+                    }
                 }
             }
         }
@@ -28,8 +31,8 @@ pipeline {
                     def services = ["movie-service", "cast-service"]
                     services.each { svc ->
                         sh """
-                            docker tag ${svc}:latest $REGISTRY/$svc:$IMAGE_TAG
-                            docker push $REGISTRY/$svc:$IMAGE_TAG
+                            docker tag ${svc}:latest $REGISTRY/${svc}:$IMAGE_TAG
+                            docker push $REGISTRY/${svc}:$IMAGE_TAG
                         """
                     }
                 }
@@ -126,4 +129,3 @@ pipeline {
         }
     }
 }
-
