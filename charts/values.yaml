@@ -5,9 +5,16 @@
 replicaCount: 3
 
 image:
-  repository: sajjadhz/fastapiapp
+- name: cat-service 
+  repository: dorismb/cat-service
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+
+
+- name: movie-service
+  repository: dorismb/movie-service
+  pullPollicy: IfNotPresent
   tag: "latest"
 
 imagePullSecrets: 
