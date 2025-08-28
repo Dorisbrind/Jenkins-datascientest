@@ -120,6 +120,8 @@ pipeline {
             steps {
                 script {
                     sh """
+                        # creé un namespace prod
+                        kubectl get namespace prod || kubectl create namespace prod
                         rm -Rf .kube
                         mkdir .kube
                         cat \$KUBECONFIG > .kube/config
