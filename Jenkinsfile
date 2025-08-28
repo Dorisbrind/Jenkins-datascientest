@@ -51,6 +51,8 @@ pipeline {
             steps {
                 script {
                     sh """
+                        # creé un namespace dev
+                        kubectl get namespace dev || kubectl create namespace dev
                         rm -Rf .kube
                         mkdir .kube
                         cat $KUBECONFIG > .kube/config
@@ -72,13 +74,15 @@ pipeline {
             steps {
                 script {
                     sh """
+                         # creé un namespace QA
+                        kubectl get namespace QA || kubectl create namespace QA
                         rm -Rf .kube
                         mkdir .kube
                         cat \$KUBECONFIG > .kube/config
                         cp charts/values.yaml values.yml
 
-                        helm upgrade --install ${APP_NAME}-dev charts \
-                          --namespace dev \
+                        helm upgrade --install ${APP_NAME}-QA charts \
+                          --namespace QA \
                           --set image.cat-service.tag=${IMAGE_TAG} \
                           --set image.movie-service.tag=${IMAGE_TAG}
                     """
@@ -93,13 +97,15 @@ pipeline {
             steps {
                 script {
                     sh """
+                        # creé un namespace staging
+                        kubectl get namespace staging || kubectl create namespace staging
                         rm -Rf .kube
                         mkdir .kube
                         cat \$KUBECONFIG > .kube/config
                         cp charts/values.yaml values.yml
                         
-                        helm upgrade --install ${APP_NAME}-dev charts \
-                          --namespace dev \
+                        helm upgrade --install ${APP_NAME}-staging charts \
+                          --namespace staging \
                           --set image.cat-service.tag=${IMAGE_TAG} \
                           --set image.movie-service.tag=${IMAGE_TAG}
                     """
@@ -123,8 +129,8 @@ pipeline {
                         cat \$KUBECONFIG > .kube/config
                         cp charts/values.yaml values.yml
                         
-                        helm upgrade --install ${APP_NAME}-dev charts \
-                          --namespace dev \
+                        helm upgrade --install ${APP_NAME}-prod charts \
+                          --namespace prod \
                           --set image.cat-service.tag=${IMAGE_TAG} \
                           --set image.movie-service.tag=${IMAGE_TAG}
                     """
