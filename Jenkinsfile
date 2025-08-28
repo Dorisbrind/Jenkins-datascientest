@@ -114,14 +114,10 @@ pipeline {
         }
 
         stage('Deploiement en prod') {
-            when {
-                expression { return env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'main' }
-            }
             environment {
                 KUBECONFIG = credentials("config")
             }
             steps {
-                input message: 'Voulez-vous déployer en production ?', ok: 'Oui'
                 script {
                     sh """
                         rm -Rf .kube
