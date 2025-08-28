@@ -114,10 +114,14 @@ pipeline {
         }
 
         stage('Deploiement en prod') {
+            When {
+                branch "master"
+            }
             environment {
                 KUBECONFIG = credentials("config")
             }
             steps {
+                input message: 'voulez-vous déployer en production ?', ok: 'oui'
                 script {
                     sh """
                         # creé un namespace prod
