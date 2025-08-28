@@ -35,9 +35,9 @@ pipeline {
                     def services = ["movie-service", "cast-service"]
                     services.each { svc ->
                         sh """
-                            docker login -u $DOCKER_ID -p $DOCKER_PASS
-                            docker tag ${svc}:latest $REGISTRY/${svc}:$IMAGE_TAG
-                            docker push $DOCKER_ID/${svc}:$IMAGE_TAG
+                            echo "$DOCKER_PASS" | docker login -u dorismb --password-stdin
+                            docker tag ${svc}:latest dorismb/${svc}:${IMAGE_TAG}
+                            docker push dorismb/${svc}:${IMAGE_TAG}
                         """
                     }
                 }
