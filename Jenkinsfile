@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        REGISTRY = "docker.io/dorismb"   // Ton compte DockerHub
+        DOCKER_ID = "docker.io/dorismb"   // Ton compte DockerHub
         IMAGE_TAG = "${BUILD_NUMBER}"    // Numéro de build Jenkins comme tag
         APP_NAME = "app"                 // Nom de ton application (utilisé dans helm)
     }
@@ -26,13 +26,18 @@ pipeline {
         }
 
         stage('Push Docker Images') {
+            environment
+            {
+                DOCKER_PASS = credentials("DOCKER_HUB_PASS")
+            }
             steps {
                 script {
                     def services = ["movie-service", "cast-service"]
                     services.each { svc ->
                         sh """
+                            docker login -u $DOCKER_ID -p $DOCKER_PASS
                             docker tag ${svc}:latest $REGISTRY/${svc}:$IMAGE_TAG
-                            docker push $REGISTRY/${svc}:$IMAGE_TAG
+                            docker push $DOCKER_ID/${svc}:$IMAGE_TAG
                         """
                     }
                 }
@@ -48,7 +53,7 @@ pipeline {
                     sh """
                         rm -Rf .kube
                         mkdir .kube
-                        cat \$KUBECONFIG > .kube/config
+                        cat $KUBECONFIG > .kube/config
                         cp charts/values.yaml values.yml
                         sed -i "s+movie-service:.*+movie-service: ${IMAGE_TAG}+g" values.yml
                         sed -i "s+cast-service:.*+cast-service: ${IMAGE_TAG}+g" values.yml
@@ -98,7 +103,7 @@ pipeline {
 
         stage('Deploiement en prod') {
             when {
-                branch "main"
+                branch "master"
             }
             environment {
                 KUBECONFIG = credentials("config")
