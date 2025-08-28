@@ -55,9 +55,11 @@ pipeline {
                         mkdir .kube
                         cat $KUBECONFIG > .kube/config
                         cp charts/values.yaml values.yml
-                        sed -i "s+movie-service:.*+movie-service: ${IMAGE_TAG}+g" values.yml
-                        sed -i "s+cast-service:.*+cast-service: ${IMAGE_TAG}+g" values.yml
-                        helm upgrade --install ${APP_NAME}-dev charts --values=values.yml --namespace dev
+                        
+                        helm upgrade --install ${APP_NAME}-dev charts \
+                          --namespace dev \
+                          --set image.cat-service.tag=${IMAGE_TAG} \
+                          --set image.movie-service.tag=${IMAGE_TAG}
                     """
                 }
             }
@@ -74,9 +76,11 @@ pipeline {
                         mkdir .kube
                         cat \$KUBECONFIG > .kube/config
                         cp charts/values.yaml values.yml
-                        sed -i "s+movie-service:.*+movie-service: ${IMAGE_TAG}+g" values.yml
-                        sed -i "s+cast-service:.*+cast-service: ${IMAGE_TAG}+g" values.yml
-                        helm upgrade --install ${APP_NAME}-qa charts --values=values.yml --namespace qa
+
+                        helm upgrade --install ${APP_NAME}-dev charts \
+                          --namespace dev \
+                          --set image.cat-service.tag=${IMAGE_TAG} \
+                          --set image.movie-service.tag=${IMAGE_TAG}
                     """
                 }
             }
@@ -93,9 +97,11 @@ pipeline {
                         mkdir .kube
                         cat \$KUBECONFIG > .kube/config
                         cp charts/values.yaml values.yml
-                        sed -i "s+movie-service:.*+movie-service: ${IMAGE_TAG}+g" values.yml
-                        sed -i "s+cast-service:.*+cast-service: ${IMAGE_TAG}+g" values.yml
-                        helm upgrade --install ${APP_NAME}-staging charts --values=values.yml --namespace staging
+                        
+                        helm upgrade --install ${APP_NAME}-dev charts \
+                          --namespace dev \
+                          --set image.cat-service.tag=${IMAGE_TAG} \
+                          --set image.movie-service.tag=${IMAGE_TAG}
                     """
                 }
             }
@@ -116,9 +122,11 @@ pipeline {
                         mkdir .kube
                         cat \$KUBECONFIG > .kube/config
                         cp charts/values.yaml values.yml
-                        sed -i "s+movie-service:.*+movie-service: ${IMAGE_TAG}+g" values.yml
-                        sed -i "s+cast-service:.*+cast-service: ${IMAGE_TAG}+g" values.yml
-                        helm upgrade --install ${APP_NAME}-prod charts --values=values.yml --namespace prod
+                        
+                        helm upgrade --install ${APP_NAME}-dev charts \
+                          --namespace dev \
+                          --set image.cat-service.tag=${IMAGE_TAG} \
+                          --set image.movie-service.tag=${IMAGE_TAG}
                     """
                 }
             }
