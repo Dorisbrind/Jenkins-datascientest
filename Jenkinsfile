@@ -75,14 +75,14 @@ pipeline {
                 script {
                     sh """
                          # creé un namespace QA
-                        kubectl get namespace QA || kubectl create namespace QA
+                        kubectl get namespace qa || kubectl create namespace qa
                         rm -Rf .kube
                         mkdir .kube
                         cat \$KUBECONFIG > .kube/config
                         cp charts/values.yaml values.yml
 
-                        helm upgrade --install ${APP_NAME}-QA charts \
-                          --namespace QA \
+                        helm upgrade --install ${APP_NAME}-qa charts \
+                          --namespace qa \
                           --set image.cat-service.tag=${IMAGE_TAG} \
                           --set image.movie-service.tag=${IMAGE_TAG}
                     """
