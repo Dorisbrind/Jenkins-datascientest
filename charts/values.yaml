@@ -5,17 +5,15 @@
 replicaCount: 3
 
 image:
-- name: cat-service 
-  repository: dorismb/cat-service
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+  cat-service:
+    repository: dorismb/cat-service
+    pullPolicy: IfNotPresent
+    tag: "latest"
 
-
-- name: movie-service
-  repository: dorismb/movie-service
-  pullPollicy: IfNotPresent
-  tag: "latest"
+  movie-service:
+    repository: dorismb/movie-service
+    pullPolicy: IfNotPresent
+    tag: "latest"
 
 imagePullSecrets: 
   - name: "regcred"
